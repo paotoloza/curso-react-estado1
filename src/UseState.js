@@ -53,7 +53,7 @@ function UseState({ name }) {
          placeholder="Código de seguridad" 
          value={value} //lo que escriba el usuario
          onChange={(event) => { 
-           setValue(event.target.value); //recibir lo que escribio el usuario (en el estado)
+           setValue(event.target.value); //recibir lo que escribio el usuario (en el estado) se va actualizando según lo que esciba el usuario
          }}
        />
         <button
