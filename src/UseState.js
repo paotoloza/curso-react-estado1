@@ -21,7 +21,8 @@ function UseState({ name }) {
           // setLoading(false);  //que vuelva a ser false después de los 3 segundos
 
           if (value === SECURITY_CODE) {  //si lo que escribio el usuario es igual al codigo de seguridad (SECURITY_CODE)
-           setLoading(false); //el estado de carga se vuelve falso porque ya se termino de cargar
+            setLoading(false); //el estado de carga se vuelve falso porque ya se termino de cargar
+            // setError(false); //una forma de poner error en falso mientras carga (luego de equivocarse de clave)
          } else { // sino
            setError(true);  //error (código incorrecto)
            setLoading(false);//el estado de carga se vuelve falso porque ya se termino de cargar
@@ -39,7 +40,7 @@ function UseState({ name }) {
 
        <p>Por favor, escribe el código de seguridad.</p>
 
-       {error && (
+       {(error && !loading) && (  //una forma de poner error en falso mientras carga (luego de equivocarse de clave)
          <p>Error: el código es incorrecto</p>
        )}
 
@@ -58,7 +59,7 @@ function UseState({ name }) {
         <button
           onClick={() => {
             setLoading(true); //si se presiona el botón de comprobar muestra en pantalla cargando
-          setError(false);
+          //setError(false); //una forma de poner error en falso mientras carga (luego de equivocarse de clave)
         }}
        >Comprobar
        </button>
