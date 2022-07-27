@@ -1,9 +1,14 @@
 import React from 'react';
 
+const SECURITY_CODE = 'paradigma';
+
 //crear una funcion con reacthook
 function UseState({ name }) {
-    const [error, setError] = React.useState(true); //crear un estado de error//
+    const [value, setValue] = React.useState(''); //crear un estado dinamico (lo que los usuarios escriban en el código de seguridad)
+    const [error, setError] = React.useState(false); //crear un estado de error//
     const [loading, setLoading] = React.useState(false); //crear un estado de cargando (empieza en false)//
+
+    console.log(value) 
 
     React.useEffect(() => { //queremos que luego de presionar el botón se muestre el mensaje cargando y despues de un tiempo que lo
       //borre de la pantalla (que vuelva a ser false)
@@ -13,8 +18,14 @@ function UseState({ name }) {
         setTimeout(() => {
           console.log("Haciendo la validación")
  
-          setLoading(false);  //que vuelva a ser false después de los 3 segundos
- 
+          // setLoading(false);  //que vuelva a ser false después de los 3 segundos
+
+          if (value === SECURITY_CODE) {  //si lo que escribio el usuario es igual al codigo de seguridad (SECURITY_CODE)
+           setLoading(false); //el estado de carga se vuelve falso porque ya se termino de cargar
+         } else { // sino
+           setError(true);  //error (código incorrecto)
+           setLoading(false);//el estado de carga se vuelve falso porque ya se termino de cargar
+         }
           console.log("terminando la validación")
         }, 3000); //que espere 3 segundos 
       }
@@ -36,10 +47,21 @@ function UseState({ name }) {
          <p>Cargando...</p>
        )}
 
-       <input placeholder="Código de seguridad" />
+       {/* <input placeholder="Código de seguridad" /> */}
+       <input
+         placeholder="Código de seguridad" 
+         value={value} //lo que escriba el usuario
+         onChange={(event) => { 
+           setValue(event.target.value); //recibir lo que escribio el usuario (en el estado)
+         }}
+       />
         <button
-          onClick={() => setLoading(true)} //si se presiona el botón de comprobar muestra en pantalla cargando
-       >Comprobar</button>
+          onClick={() => {
+            setLoading(true); //si se presiona el botón de comprobar muestra en pantalla cargando
+          setError(false);
+        }}
+       >Comprobar
+       </button>
      </div>
    );
  }
