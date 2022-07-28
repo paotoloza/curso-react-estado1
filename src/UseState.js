@@ -15,6 +15,8 @@ function UseState({ name }) {
     value: '',
     error: false,
     loading: false,
+    deleted: false,
+    confirmed: false,
   });
     // console.log(value) 
     console.log(state)
@@ -41,6 +43,7 @@ function UseState({ name }) {
                 ...state,
                 error: false,
                 loading: false,
+                confirmed: true,
               });
 
          } else { // sino
@@ -62,51 +65,88 @@ function UseState({ name }) {
    // }, [loading]); //que se ejecute cuando cambie el estado cargando (es decir cuando se presione el boton de comprobar)
      }, [state.loading]);
 
-   return (
-     <div>
-       <h2>Eliminar {name}</h2>
+     if (!state.deleted && !state.confirmed) { //si delete y confirmed son falsos
+      return (
+        <div>
+          <h2>Eliminar {name}</h2> {/*pregunta si quieres eliminar*/}
+ 
+          <p>Por favor, escribe el código de seguridad.</p> {/*solicita escribir el código de seguridad*/}
+ 
+          {(state.error && !state.loading) && ( //error verdadero y estado cargando en falso
+            <p>Error: el código es incorrecto</p> //código incorrecto
+          )}
+          {state.loading && ( //estado cargando en verdadero
+            <p>Cargando...</p> //código correcto cargando
+          )}
+ 
+          <input
+            placeholder="Código de seguridad"
+            value={state.value} //código escrito por usuario
+            onChange={(event) => {
+              setState({
+                ...state,
+                value: event.target.value,
+              });
+            }}
+          />
+          <button
+            onClick={() => {
+              setState({
+                ...state,
+                loading: true,
+              });
+            }}
+          >Comprobar</button> {/*Botón para comprobar código*/}
+        </div>
+      );
+    } else if (!!state.confirmed && !state.deleted) { //si confirmed es verdadero y delete es falso
+      return (
+        <React.Fragment>
+          <p>Pedimos confirmación. ¿Tas segurx?</p> {/*Estado de confirmación*/}
 
-       <p>Por favor, escribe el código de seguridad.</p>
+       <button
+           onClick={() => { //botón para eliminar 
+             setState({
+               ...state,
+               deleted: true,
+             });
+           }}
+         >
+           Sí, eliminar
+         </button>
+         <button //botón para no eliminar 
+           onClick={() => {
+             setState({
+               ...state,
+               confirmed: false,
+               value: '',
+             });
+           }}
+         >
+           Nop, me arrepentí
+         </button>
+       </React.Fragment>
+     );
+   } else { //si confirmed es verdadero y delete es verdadero
+     return (
+       <React.Fragment>
+         <p>Eliminado con éxito</p>  {/*Eliminó con exito*/}
 
-       {/* {(error && !loading) && (  //una forma de poner error en falso mientras carga (luego de equivocarse de clave) */}
-      
-       {(state.error && !state.loading) && (
-         <p>Error: el código es incorrecto</p>
-       )}
-
-       {/* {loading && ( */}
-        
-         {state.loading && (
-         <p>Cargando...</p>
-       )}
-
-       {/* <input placeholder="Código de seguridad" /> */}
-       <input
-         placeholder="Código de seguridad" 
-        // value={value} //lo que escriba el usuario
-         value={state.value}
-         onChange={(event) => { 
-          // setValue(event.target.value); //recibir lo que escribio el usuario (en el estado) se va actualizando según lo que esciba el usuario
-          setState({
-            ...state,
-            value: event.target.value,
-          });
-         }}
-       />
-        <button
-          onClick={() => {
-           // setLoading(true); //si se presiona el botón de comprobar muestra en pantalla cargando
-          //setError(false); //una forma de poner error en falso mientras carga (luego de equivocarse de clave)
-
-          setState({
-            ...state,
-            loading: true,
-          });
-        }}
-       >Comprobar
-       </button>
-     </div>
-   );
- }
+          <button //crea un botón para resetear y volver al inicio
+           onClick={() => {
+             setState({
+               ...state,
+               confirmed: false,
+               deleted: false,
+               value: '',
+             });
+           }}
+         >
+           Resetear, volver atrás
+         </button>
+       </React.Fragment>
+     );
+   }
+  }
 
  export { UseState };
