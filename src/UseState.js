@@ -11,15 +11,59 @@ function UseState({ name }) {
     // const [loading, setLoading] = React.useState(false); //crear un estado de cargando (empieza en false)//
 
    //estados compuestos
-   const [state, setState] = React.useState({
+   const [state, setState] = React.useState({ //estados
     value: '',
     error: false,
     loading: false,
     deleted: false,
     confirmed: false,
   });
-    // console.log(value) 
-    console.log(state)
+  const onConfirm = () => { //confirmación
+    setState({
+      ...state,
+      error: false,
+      loading: false,
+      confirmed: true,
+    });
+  };
+
+  const onError = () => { //error
+    setState({
+      ...state,
+      error: true,
+      loading: false,
+    });
+  };
+
+  const onWrite = (newValue) => { //nuevo código escrito por usuario
+    setState({
+      ...state,
+      value: newValue,
+    });
+  }
+
+  const onCheck = () => { //cargando
+    setState({
+      ...state,
+      loading: true,
+    });
+  };
+
+  const onDelete = () => { //borrar
+    setState({
+      ...state,
+      deleted: true,
+    });
+  };
+
+  const onReset = () => { //resetear y volver al inicio
+    setState({
+      ...state,
+      confirmed: false,
+      deleted: false,
+      value: '',
+    });
+  };
 
     React.useEffect(() => { //queremos que luego de presionar el botón se muestre el mensaje cargando y despues de un tiempo que lo
       //borre de la pantalla (que vuelva a ser false)
@@ -39,23 +83,14 @@ function UseState({ name }) {
 
           //para estado compuesto
             if (state.value === SECURITY_CODE) {
-              setState({
-                ...state,
-                error: false,
-                loading: false,
-                confirmed: true,
-              });
+              onConfirm();
 
          } else { // sino
           //  setError(true);  //error (código incorrecto)
           //  setLoading(false);//el estado de carga se vuelve falso porque ya se termino de cargar
 
-          //para estado compuesto
-           setState({
-            ...state,
-            error: true,
-            loading: false,
-          });
+         onError();
+
          }
           console.log("terminando la validación")
         }, 3000); //que espere 3 segundos 
@@ -83,18 +118,12 @@ function UseState({ name }) {
             placeholder="Código de seguridad"
             value={state.value} //código escrito por usuario
             onChange={(event) => {
-              setState({
-                ...state,
-                value: event.target.value,
-              });
+              onWrite(event.target.value);
             }}
           />
           <button
             onClick={() => {
-              setState({
-                ...state,
-                loading: true,
-              });
+              onCheck();
             }}
           >Comprobar</button> {/*Botón para comprobar código*/}
         </div>
@@ -106,21 +135,14 @@ function UseState({ name }) {
 
        <button
            onClick={() => { //botón para eliminar 
-             setState({
-               ...state,
-               deleted: true,
-             });
+            onDelete();
            }}
          >
            Sí, eliminar
          </button>
          <button //botón para no eliminar 
            onClick={() => {
-             setState({
-               ...state,
-               confirmed: false,
-               value: '',
-             });
+            onReset();
            }}
          >
            Nop, me arrepentí
@@ -134,12 +156,7 @@ function UseState({ name }) {
 
           <button //crea un botón para resetear y volver al inicio
            onClick={() => {
-             setState({
-               ...state,
-               confirmed: false,
-               deleted: false,
-               value: '',
-             });
+            onReset();
            }}
          >
            Resetear, volver atrás
